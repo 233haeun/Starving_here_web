@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>당 스캐너 & 저당 큐레이션 :: 안먹었당 (Desktop Responsive)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <div class="app-layout-wrapper">
+    
+    <aside class="desktop-sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-emoji">🍬</span>
+        <span class="logo-text">안먹었당</span>
+      </div>
+      <nav class="sidebar-menu">
+        <button class="nav-item active" data-tab="home" onclick="app.switchTab('home', this)">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label">홈 대시보드</span>
+        </button>
+        <button class="nav-item" data-tab="curation" onclick="app.switchTab('curation', this)">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label">대체 큐레이션</span>
+        </button>
+        <button class="nav-item" data-tab="map" onclick="app.switchTab('map', this)">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4zM8 2v16M16 6v16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label">저당 지도</span>
+        </button>
+        <button class="nav-item" data-tab="profile" onclick="app.switchTab('profile', this)">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="nav-label">마이 프로필</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <p>© 2026 안먹었당 헬스케어</p>
+      </div>
+    </aside>
+
+    <div class="main-viewport">
+      
+      <header class="app-header">
+        <div class="header-logo-mobile">
+          <span class="logo-emoji">🍬</span>
+          <span class="logo-text">안먹었당</span>
+        </div>
+        <div class="header-status-area">
+          <div class="user-score-badge">
+            <span>Score: <strong id="header-user-score">400</strong>점</span>
+          </div>
+          <div class="sugar-badge" id="header-sugar-badge">
+            <span class="dot green"></span>
+            <span class="label">안전</span>
+          </div>
+        </div>
+      </header>
+
+      <div id="toast-container" class="toast-container"></div>
+
+      <main class="app-content" id="app-content">
+
+        <section id="tab-home" class="tab-view active">
+          <div class="home-grid-layout">
+            
+            <div class="home-left-column">
+              <div class="glass-card sugar-dash-card">
+                <div class="card-header">
+                  <span class="card-title">오늘의 당 소비 현황</span>
+                  <span class="card-subtitle">권장량 50g (WHO 기준)</span>
+                </div>
+                <div class="sugar-progress-container">
+                  <div class="circular-progress-wrap">
+                    <svg class="progress-ring" width="130" height="130">
+                      <circle class="progress-ring-bg" stroke="rgba(255,255,255,0.06)" stroke-width="9" fill="transparent" r="54" cx="65" cy="65"/>
+                      <circle class="progress-ring-bar" id="sugar-progress-ring" stroke="var(--neon-green)" stroke-width="9" fill="transparent" r="54" cx="65" cy="65" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
+                    </svg>
+                    <div class="progress-value">
+                      <span class="value-num" id="sugar-current-text">12</span>
+                      <span class="value-unit">/ 50g</span>
+                    </div>
+                  </div>
+                  <div class="sugar-stats">
+                    <div class="stat-item">
+                      <span class="stat-label">하루 권장 섭취율</span>
+                      <span class="stat-value text-green" id="sugar-percentage">24%</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label">각설탕 환산 분량</span>
+                      <span class="stat-value" id="sugar-cubes-text">4.0개</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card detox-missions-card">
+                <div class="card-header">
+                  <span class="card-title">💊 실시간 디톡스 혈당 강하 미션</span>
+                  <span class="badge" id="detox-reduction-badge">미션 달성 시 당 지수 하락!</span>
+                </div>
+                <div class="mission-list">
+                  <div class="mission-item" onclick="app.completeMission('water', 10, this)">
+                    <div class="mission-info">
+                      <span class="mission-icon">💧</span>
+                      <div class="mission-texts">
+                        <span class="mission-title">시원한 음용수 500ml 충전</span>
+                        <span class="mission-reward">당 섭취 10g 상쇄 디톡스</span>
+                      </div>
+                    </div>
+                    <button class="mission-btn" id="btn-mission-water">수행</button>
+                  </div>
+                  <div class="mission-item" onclick="app.completeMission('walk', 15, this)">
+                    <div class="mission-info">
+                      <span class="mission-icon">👟</span>
+                      <div class="mission-texts">
+                        <span class="mission-title">식후 10분 허벅지 유산소 산책</span>
+                        <span class="mission-reward">당 섭취 15g 스파이크 증발</span>
+                      </div>
+                    </div>
+                    <button class="mission-btn" id="btn-mission-walk">수행</button>
+                  </div>
+                  <div class="mission-item" onclick="app.completeMission('squat', 20, this)">
+                    <div class="mission-info">
+                      <span class="mission-icon">🏋️</span>
+                      <div class="mission-texts">
+                        <span class="mission-title">인슐린 펌프 허벅지 스쿼트 20회</span>
+                        <span class="mission-reward">당 섭취 20g 하드 태우기</span>
+                      </div>
+                    </div>
+                    <button class="mission-btn" id="btn-mission-squat">수행</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="home-right-column">
+              <div class="glass-card character-card-wrapper">
+                <div class="character-section">
+                  <div class="character-aura" id="character-aura"></div>
+                  <div class="character-container" id="character-container">
+                    <img id="character-img" src="dodu_png/3.png" alt="두두" class="character-image" onerror="this.style.display='none'; document.getElementById('backup-fallback-char').style.display='flex';">
+                    <div id="backup-fallback-char" class="character-fallback-avatar" style="display:none;">
+                      <div class="character-body">
+                        <div class="character-face">
+                          <div class="character-eyes"><div class="eye"></div><div class="eye"></div></div>
+                          <div class="character-cheeks"><div class="cheek"></div><div class="cheek"></div></div>
+                          <div class="character-mouth"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="character-shadow"></div>
+                  </div>
+                  <div class="character-status-box">
+                    <h3 class="char-name" id="char-name">두두</h3>
+                    <p class="char-state-desc" id="char-state-desc">단게 생각나는 상쾌한 하루예요! 🌱</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card tip-card">
+                <div class="card-header"><span class="card-title">💡 오늘의 저당 지식 가이드</span></div>
+                <p class="tip-content" id="daily-tip">식이섬유 ➡️ 단백질 ➡️ 탄수화물 순으로 섭취하면 혈당 스파이크 폭발을 효율적으로 억제할 수 있습니다.</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section id="tab-scan" class="tab-view">
+          <div class="scan-container-layout">
+            
+            <div class="scan-left-viewport">
+              <div class="scanner-wrapper">
+                <div class="camera-viewport">
+                  <canvas id="sugar-physics-canvas" class="physics-canvas"></canvas>
+                  
+                  <div class="scanner-aim">
+                    <div class="aim-corners"></div>
+                    <div class="scan-laser-line"></div>
+                  </div>
+                  <div class="viewport-overlay-text">영양성분표 바코드 혹은 제품 전면을 렌즈에 포커싱하세요.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="scan-right-controls">
+              <div class="glass-card item-selector-card">
+                <div class="card-header">
+                  <span class="card-title">🔍 실시간 OCR 바코드 스캔 시뮬레이션</span>
+                  <span class="card-subtitle">정밀 계측 테스트용 프리셋 링크</span>
+                </div>
+                <p class="section-guide-desc">제품을 선택하면 바코드 분석 레이저 애니메이션과 함께 물리적 설탕 폭탄 낙하 엔진이 시작됩니다.</p>
+                
+                <div class="product-scan-grid">
+                  <button class="scan-preset-btn" onclick="app.simulateScan('cola')">
+                    <span class="btn-emoji">🥤</span>
+                    <div class="btn-info"><span class="p-title">코카콜라 클래식</span><span class="p-sugar text-red">당류 38g</span></div>
+                  </button>
+                  <button class="scan-preset-btn" onclick="app.simulateScan('latte')">
+                    <span class="btn-emoji">☕</span>
+                    <div class="btn-info"><span class="p-title">바닐라 라떼 (L)</span><span class="p-sugar text-red">당류 45g</span></div>
+                  </button>
+                  <button class="scan-preset-btn" onclick="app.simulateScan('tanghulu')">
+                    <span class="btn-emoji">🍓</span>
+                    <div class="btn-info"><span class="p-title">딸기 탕후루 (1꼬치)</span><span class="p-sugar text-yellow">당류 24g</span></div>
+                  </button>
+                  <button class="scan-preset-btn" onclick="app.simulateScan('cookie')">
+                    <span class="btn-emoji">🍪</span>
+                    <div class="btn-info"><span class="p-title">초코칩 쿠키</span><span class="p-sugar text-yellow">당류 18g</span></div>
+                  </button>
+                </div>
+              </div>
+
+              <div id="scan-result-card" class="glass-card glass-modal">
+                <div class="modal-indicator"></div>
+                <div class="scan-result-body">
+                  <div class="result-product-info">
+                    <span id="res-badge" class="prod-badge">SUGAR CRITICAL</span>
+                    <h2 class="prod-name" id="res-name">코카콜라 클래식 (350ml)</h2>
+                    
+                    <div class="prod-sugar-info">
+                      <div class="sugar-info-item">
+                        <span class="lbl">당류 계측치</span>
+                        <span class="val text-red" id="res-sugar-value">38g</span>
+                      </div>
+                      <div class="sugar-info-item">
+                        <span class="lbl">각설탕 누적비</span>
+                        <span class="val" id="res-cubes-value">13개</span>
+                      </div>
+                    </div>
+                    <p class="shock-description" id="res-shock-text">⚠️ 단 1캔으로 일일 상한 권장량의 76%를 직격 충족합니다! 심각한 인슐린 저항 스파이크를 초래합니다.</p>
+                  </div>
+
+                  <div class="swap-suggestion-area">
+                    <div class="swap-arrow">⬇️ 안먹었당 혈당 방어 추천 제로 스왑 ⬇️</div>
+                    <div class="alternative-product-card">
+                      <span class="emoji" id="res-alt-emoji">🧼</span>
+                      <span class="name" id="res-alt-name">코카콜라 제로 (350ml)</span>
+                      <span class="sugar text-green">0g</span>
+                    </div>
+                    <div class="tradein-benefit-banner">
+                      <span class="sparkle">✨</span>
+                      <span id="res-tradein-text">제로로 스왑 교환 시, 각설탕 13개를 완벽하게 덜 먹게 됩니다!</span>
+                    </div>
+                  </div>
+
+                  <div class="action-btn-group">
+                    <button class="btn btn-secondary" onclick="app.eatSugarItem()">그냥 먹을래요 ☠️</button>
+                    <button class="btn btn-primary btn-glow" onclick="app.tradeInAlternative()">저당 대안으로 먹기 🎉</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-curation" class="tab-view">
+          <div class="curation-container">
+            <div class="section-title-area">
+              <h2 class="sec-title">스마트 제로 대체 식품 큐레이션</h2>
+              <p class="sec-desc">당 함량은 내리고 미각의 즐거움은 그대로 유지하는 프리미엄 제로 스왑 마켓 플레이스</p>
+            </div>
+
+            <div class="curation-grid-layout">
+              
+              <div class="curation-left">
+                <div class="curation-section-title">🏆 실시간 베스트 저당 절약 이용자 랭킹</div>
+                <div class="glass-card best-users-card">
+                  <div class="leaderboard-header">
+                    <span class="lbl-rank">순위</span>
+                    <span class="lbl-user">가디언 유저 ID</span>
+                    <span class="lbl-score">절약 환산 점수</span>
+                  </div>
+                  <div class="leaderboard-list" id="leaderboard-list">
+                    </div>
+                </div>
+              </div>
+
+              <div class="curation-right">
+                <div class="curation-section-title">🍳 혈당 철벽 대항! 무설탕 홈메이드 제로 레시피</div>
+                <div class="recipe-grid">
+                  <div class="glass-card recipe-card">
+                    <div class="recipe-thumb">🍓</div>
+                    <div class="recipe-content">
+                      <h4 class="recipe-title">알룰로스 수제 제로 딸기청</h4>
+                      <p class="recipe-desc">정제 설탕을 완벽 배제하고 액상 알룰로스를 1:1 결합하여 숙성한 혈당 안심 과일청</p>
+                      <button class="recipe-use-btn" onclick="app.useRecipeReward(15, '제로 딸기청 레시피')">레시피 잠금해제 및 15g 세이브</button>
+                    </div>
+                  </div>
+                  <div class="glass-card recipe-card">
+                    <div class="recipe-thumb">🍦</div>
+                    <div class="recipe-content">
+                      <h4 class="recipe-title">그릭 요거트 에리스리톨 바크</h4>
+                      <p class="recipe-desc">고농축 유청 요거트에 제로 에리스리톨 감미료와 카카오닙스를 얼려 만든 크런치 간식</p>
+                      <button class="recipe-use-btn" onclick="app.useRecipeReward(20, '요거트 바크 레시피')">레시피 잠금해제 및 20g 세이브</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="curation-section-title" style="margin-top: 28px;">🔥 이번 주 전국 실시간 최고 누적 스왑 제로 스낵</div>
+            <div class="carousel-container">
+              <div class="curation-card-slider">
+                <div class="glass-card curation-slide-card">
+                  <div class="slide-header"><span class="category-tag">음료/소다</span><span class="swap-count-badge">🔥 1,293회 전환</span></div>
+                  <h4 class="item-name">밀키스 제로 (250ml)</h4>
+                  <p class="item-desc">밀키스 고유의 청량한 우유 맛 크림 탄산을 당류와 칼로리 0g으로 실현</p>
+                  <div class="item-sugar-comparison"><span class="old-val">기존 31g</span> ➡️ <span class="new-val text-green">ZERO 0g</span></div>
+                </div>
+                <div class="glass-card curation-slide-card">
+                  <div class="slide-header"><span class="category-tag">디저트/빙과</span><span class="swap-count-badge">🔥 984회 전환</span></div>
+                  <h4 class="item-name">라라스윗 초콜릿 초코바</h4>
+                  <p class="item-desc">두터운 카카오 쉘 코팅 속에 진한 저당 초콜릿 아이스를 가득 담은 트렌디 디저트</p>
+                  <div class="item-sugar-comparison"><span class="old-val">기존 19g</span> ➡️ <span class="new-val text-green">ZERO 2g</span></div>
+                </div>
+                <div class="glass-card curation-slide-card">
+                  <div class="slide-header"><span class="category-tag">스낵/과자</span><span class="swap-count-badge">🔥 812회 전환</span></div>
+                  <h4 class="item-name">롯데 ZERO 초콜릿칩 쿠키</h4>
+                  <p class="item-desc">천연 당알코올 말티톨 배합으로 정통 쿠키의 크런치한 식감과 깊은 단맛 복원</p>
+                  <div class="item-sugar-comparison"><span class="old-val">기존 16g</span> ➡️ <span class="new-val text-green">ZERO 0g</span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section id="tab-map" class="tab-view">
+          <div class="map-container">
+            <div class="section-title-area">
+              <h2 class="sec-title">내 위치 반경 실시간 저당 안전지대 맵</h2>
+              <p class="sec-desc">대체 시럽(알룰로스/스테비아) 옵션 매장 및 편의점 제로 핵심 식품의 실시간 재고 래스터 트래킹</p>
+            </div>
+
+            <div class="map-grid-layout">
+              <div class="map-left-canvas">
+                <div class="glass-card interactive-map-card">
+                  <div class="map-canvas-container">
+                    <svg class="neon-map" id="interactive-svg-map" viewBox="0 0 400 350">
+                      <line x1="0" y1="100" x2="400" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+                      <line x1="0" y1="220" x2="400" y2="220" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+                      <line x1="180" y1="0" x2="180" y2="350" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
+                      
+                      <g transform="translate(200, 175)">
+                        <circle r="22" class="pulse-ring" fill="rgba(0, 245, 160, 0.15)"/>
+                        <circle r="8" fill="var(--neon-green)"/>
+                        <circle r="4" fill="#fff"/>
+                      </g>
+
+                      <g class="map-pin-g" transform="translate(100, 80)" onclick="app.showSpotDetail('mega')">
+                        <circle r="12" fill="rgba(255, 230, 0, 0.2)"/>
+                        <circle r="6" fill="var(--neon-yellow)"/>
+                        <text y="-18" text-anchor="middle" class="pin-label">메가커피 (알룰로스 시럽 매장)</text>
+                      </g>
+
+                      <g class="map-pin-g" transform="translate(320, 120)" onclick="app.showSpotDetail('gs25')">
+                        <circle r="12" fill="rgba(0, 229, 255, 0.2)"/>
+                        <circle r="6" fill="#00e5ff"/>
+                        <text y="-18" text-anchor="middle" class="pin-label">GS25 (제로 아이스 다량확보)</text>
+                      </g>
+
+                      <g class="map-pin-g" transform="translate(90, 260)" onclick="app.showSpotDetail('cu')">
+                        <circle r="12" fill="rgba(189, 0, 255, 0.2)"/>
+                        <circle r="6" fill="var(--neon-purple)"/>
+                        <text y="-18" text-anchor="middle" class="pin-label">CU 강남점</text>
+                      </g>
+
+                      <g class="map-pin-g" transform="translate(290, 280)" onclick="app.showSpotDetail('starbucks')">
+                        <circle r="12" fill="rgba(0, 245, 160, 0.2)"/>
+                        <circle r="6" fill="var(--neon-green)"/>
+                        <text y="-18" text-anchor="middle" class="pin-label">스타벅스 (라이트 커스텀)</text>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="map-right-details">
+                <div id="spot-detail-card" class="glass-card spot-detail-overlay-card">
+                  <div class="spot-card-inner">
+                    <div class="spot-main-meta">
+                      <span class="spot-category" id="spot-category">TARGETED PRESET</span>
+                      <h3 class="spot-title-name" id="spot-name">지도상의 핀 스팟을 마우스로 클릭하세요</h3>
+                      <p class="spot-distance-text" id="spot-distance">매장을 클릭하시면 커스텀 대체 감미료 지원 상태 및 제로 실시간 재고 바인딩 목록이 동적으로 표출됩니다.</p>
+                    </div>
+                    
+                    <div class="spot-stock-list-area">
+                      <div class="stock-header-lbl">📦 매장 실시간 입고/변경 가능 제로 품목</div>
+                      <div class="stock-items-wrapper" id="spot-stock-list">
+                        <p style="color: var(--text-muted); font-size: 12px; padding: 12px 0; text-align: center;">실시간 위성 데이터 동기화 대기중</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-profile" class="tab-view">
+          <div class="profile-container">
+            <div class="section-title-area">
+              <h2 class="sec-title">내 누적 당 디톡스 인덱스 리포트</h2>
+              <p class="sec-desc">스마트 제로 스왑 및 혈당 미션 실천을 통해 완성해 나가는 영양 정보 대시보드</p>
+            </div>
+
+            <div class="profile-grid-layout">
+              <div class="glass-card profile-dashboard">
+                <div class="profile-user-header">
+                  <div class="p-avatar">👑</div>
+                  <div class="p-meta">
+                    <h3 class="p-nickname">안전 혈당 가디언즈 1기</h3>
+                    <span class="p-email">anti_sugar@dangle.io</span>
+                  </div>
+                </div>
+                
+                <div class="profile-stats-summary-grid">
+                  <div class="p-stat-box">
+                    <span class="p-lbl">누적 당 세이브량</span>
+                    <span class="p-val" id="my-saved-sugar">36g</span>
+                  </div>
+                  <div class="p-stat-box">
+                    <span class="p-lbl">제로 대체 스왑 성공</span>
+                    <span class="p-val" id="my-swaps-count">2회</span>
+                  </div>
+                  <div class="p-stat-box">
+                    <span class="p-lbl">누적 디톡스 수분</span>
+                    <span class="p-val" id="my-water-drank">1,000ml</span>
+                  </div>
+                  <div class="p-stat-box">
+                    <span class="p-lbl">식후 산책 타임</span>
+                    <span class="p-val" id="my-walk-time">20분</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="glass-card weekly-chart-card">
+                <div class="card-header">
+                  <span class="card-title">📊 주간 7일 당 섭취 농도 추이</span>
+                  <span class="card-subtitle">일일 상한 기준 가이드라인 50g</span>
+                </div>
+                <div class="mini-bar-chart-wrap">
+                  <div class="chart-axis-y"><span>50g</span><span>25g</span><span>0g</span></div>
+                  <div class="chart-bars-container">
+                    <div class="chart-bar-column">
+                      <div class="bar-track"><div class="bar-fill" style="height: 76%; background: var(--neon-red);"></div></div>
+                      <span class="bar-label">월</span>
+                    </div>
+                    <div class="chart-bar-column">
+                      <div class="bar-track"><div class="bar-fill" style="height: 48%; background: var(--neon-yellow);"></div></div>
+                      <span class="bar-label">화</span>
+                    </div>
+                    <div class="chart-bar-column">
+                      <div class="bar-track"><div class="bar-fill" style="height: 92%; background: var(--neon-red);"></div></div>
+                      <span class="bar-label">수</span>
+                    </div>
+                    <div class="chart-bar-column">
+                      <div class="bar-track"><div class="bar-fill" style="height: 32%; background: var(--neon-green);"></div></div>
+                      <span class="bar-label">목</span>
+                    </div>
+                    <div class="chart-bar-column">
+                      <div class="bar-track"><div class="bar-fill" id="my-today-bar" style="height: 24%; background: var(--neon-green);"></div></div>
+                      <span class="bar-label">오늘</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass-card settings-card" style="margin-top: 18px;">
+              <div class="card-header"><span class="card-title">⚙️ 안먹었당 엔진 시스템 환경 설정</span></div>
+              <div class="setting-item">
+                <span>🔔 식후 30분 혈당 스파이크 측정 주기성 푸시 알림</span>
+                <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+              </div>
+              <div class="setting-item">
+                <span>🥤 백그라운드 내 주변 편의점 실시간 재고 래스터 동기화</span>
+                <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+              </div>
+              <div class="setting-clear-area" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                <button class="btn btn-secondary btn-sm" onclick="app.resetData()" style="width: auto; padding: 10px 18px;">로컬 스탯 데이터 전체 공장 초기화 🔄</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

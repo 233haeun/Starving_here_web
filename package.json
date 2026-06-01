@@ -1,0 +1,18 @@
+{
+  "name": "dangle-sugar-scanner",
+  "version": "1.0.0",
+  "description": "당 스캐너 및 대체 식품 큐레이션 모바일 퍼스트 웹 서비스",
+  "keywords": [
+    "sugar-scanner",
+    "zero-sugar",
+    "gamification",
+    "blood-sugar"
+  ],
+  "license": "ISC",
+  "author": "Antigravity",
+  "type": "commonjs",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx -y http-server -p 5173 -o"
+  }
+}
